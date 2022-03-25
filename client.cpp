@@ -74,12 +74,12 @@ int main (int argc, char * argv[])
 	char tmp[100];
 	time_t t;
 	struct tm * T;
-	time(&t)
+	time(&t);
 	T=localtime(&t);
 	snprint(tmp, sizeof(tmp), "%s", acstime(T));
 
     	ssize_t size = sizeof(tmp);
-	if (size != write(s, tmp, size) {
+	if (size != write(s, tmp, size)) {
 		std::cout << "pb" << std::endl;
 	}
 
