@@ -9,6 +9,9 @@ server: $(SERVER)
 client: $(CLIENT)
 	c++ -o client $(CLIENT)
 
+test: test.o
+	c++ -o test test.o
+
 -include $(CLIENT:.o=.d)
 -include $(SERVER:.o=.d)
 

@@ -55,9 +55,8 @@ int main (int argc, char * argv[])
   snprintf(tmp, sizeof(tmp), "%s", asctime(T));
 
   ret=write(s, tmp, 1 + strlen(tmp));
-  std::cout << ret << '\n';
 
-
+  
 
 	close(s);
 	return 0;

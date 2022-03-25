@@ -3,6 +3,8 @@
 #include "base.h"
 #include <cstring>
 #include <unistd.h>
+#include <cassert>
+#include <fstream>
 
 using namespace std;
 
@@ -10,10 +12,25 @@ void * hconnect (void * fd)
 
 {
 	int f = *((int *)fd);
-	char buf[256];
+	char buf[256]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
+  string name = (string) buf + ".jpg";//file name
+
   std::cout << buf << endl << ret << std::endl;
+
+  char taille[256];
+  ret = read(f, taille, sizeof(taille)); //receive the image size
+
+
+  char img[(int) taille];
+
+  ret = read(f, img, sizeof(img)); //receive the image
+
+  FILE * dest = fopen(name, "w"); //write the image
+  fwrite(img, taille, 1, dest);
+  fclose(dest);
+
 	close(f);
 
 	free(fd);
