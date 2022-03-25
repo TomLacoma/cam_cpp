@@ -74,12 +74,12 @@ int main (int argc, char * argv[])
 	char tmp[100];
 	time_t t;
 	struct tm * T;
-	time(&t)
+	time(&t);
 	T=localtime(&t);
-	snprint(tmp, sizeof(tmp), "%s", acstime(T));
+	snprintf(tmp, sizeof(tmp), "%s", asctime(T));
 
     	ssize_t size = sizeof(tmp);
-	if (size != write(s, tmp, size) {
+	if (size != write(s, tmp, size)) {
 		std::cout << "pb" << std::endl;
 	}
 
@@ -87,24 +87,23 @@ int main (int argc, char * argv[])
 
 	ssize_t size_Image;
 	ssize_t size_taille;
-	double taille;
+  char * Image = NULL;
 
 	struct stat properties;
 	if (0 == stat("test.jpg", &properties)) {
-		char * Image = new char [properties.st_size];
-		taille = properties.st_size;
+		Image = new char[properties.st_size];
 		FILE * fp = fopen("test.jpg", "r");
-		fread(Image, 1, properties.st_size, fp);
+		int rez = fread(Image, 1, properties.st_size, fp);
+    if(rez!=properties.st_size){std::cout << "Problème" << '\n';}
 		fclose(fp);
 	}
 
-	size_taille = write(s, taille, sizeof(double));
-	size_Image = write(s, Image, properties.st_size*sizeof(char));
-
-
-
-
-
+  if (Image != NULL) {
+    size_taille = write(s, &properties.st_size, sizeof(properties.st_size));
+  	size_Image = write(s, Image, properties.st_size);
+    delete [] Image;
+  }
+std::cout << size_Image << endl << size_taille << '\n';
 
 
 	close(s);

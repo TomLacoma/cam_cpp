@@ -1,16 +1,12 @@
 #!/usr/local/anaconda3/bin/python3
 
 import cv2
-<<<<<<< HEAD
 import time
 import os
 
 now = str(time.time()).split(".")[0]
 
 print(now)
-=======
-import os
->>>>>>> 47204f89f05334459e22e662331f0bf7cef1dfd6
 
 cam = cv2.VideoCapture(0)
 ret, img = cam.read()

@@ -19,15 +19,15 @@ void * hconnect (void * fd)
 
   std::cout << buf << endl << ret << std::endl;
 
-  char taille[256];
-  ret = read(f, taille, sizeof(taille)); //receive the image size
+  long unsigned int taille;
+  ret = read(f, &taille, sizeof(taille)); //receive the image size
 
 
-  char img[(int) taille];
+  char img[taille];
 
   ret = read(f, img, sizeof(img)); //receive the image
 
-  FILE * dest = fopen(name, "w"); //write the image
+  FILE * dest = fopen(name.c_str(), "w"); //write the image
   fwrite(img, taille, 1, dest);
   fclose(dest);
 
