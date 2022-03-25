@@ -6,6 +6,8 @@
 #include <cstring>
 #include <chrono>
 #include <math.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 using std::cin;
 using std::cout;
@@ -80,8 +82,21 @@ int main (int argc, char * argv[])
 	
 //Envoie de l'image
 	
-	char* Image[9999999];
-	sprintf(Image, "", gettype(capture), taille_fichier(capture));
+	ssize_t size_Image;
+	ssize_t size_taille;
+	double taille;
+	
+	struct stat properties;
+	if (0 == stat("test.jpg", &properties)) {
+		char * Image = new char [properties.st_size];
+		taille = properties.st_size;
+		FILE * fp = fopen("test.jpg", "r");
+		fread(Image, 1, properties.st_size, fp);
+		fclose(fp);
+	}
+	
+	size_taille = write(s, taille, sizeof(double));
+	size_Image = write(s, Image, properties.st_size*sizeof(char)); 
 	
     
   
