@@ -2,26 +2,26 @@
 #include <netdb.h>
 #include <iostream>
 #include "base.h"
-#include <cstring>
 #include <unistd.h>
+#include <cstring>
+#include <chrono>
+#include <math.h>
 
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
+using namespace std::chrono;
 
-int main (int argc, char * argv[])
+
+//Fonction permettant de créer un socket
+int
+create_socket (const char * server_name)
 
 {
-        struct sockaddr_in saddr;
-        struct hostent * server;
-        int s, ret;
-
-
-	if (argc == 1) {
-		std::cerr << "usage: " << argv[0]
-			  << " [ adresse IP/nom du serveur ]" << std::endl;
-		return 0;
-	}
-
-        s = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    struct sockaddr_in saddr;
+    struct hostent * server;
+    int ret;
+        int s = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (s < 0) {
                 std::cerr << "cannot create socket" << std::endl;
                 return 0;
@@ -29,10 +29,10 @@ int main (int argc, char * argv[])
 
         saddr.sin_family = AF_INET;
         saddr.sin_port = htons(DEFAULT_PORT);
-        server = gethostbyname(argv[1]);
+        server = gethostbyname(server_name);
         if (server == NULL) {
                 std::cerr << "gethostbyname() failed" << std::endl;
-		close(s);
+				close(s);
                 return 0;
         }
         else {
@@ -45,20 +45,49 @@ int main (int argc, char * argv[])
                 close(s);
                 return 0;
         }
-
-  time_t t;
-	struct tm * T;
-  char tmp[100];
-
-  time(&t);
-  T = localtime(&t);
-  snprintf(tmp, sizeof(tmp), "%s", asctime(T));
-
-  ret=write(s, tmp, 1 + strlen(tmp));
-  std::cout << ret << '\n';
+        
+        return s;
+}
 
 
+int main (int argc, char * argv[])
 
-	close(s);
+{
+//Creation d'un socket, etc...
+	if (argc == 1) {
+		std::cerr << "usage: " << argv[0] 
+			  << " [ adresse IP/nom du serveur 1 ] ..." << std::endl;
+		return 0;
+	}
+
+	int s;
+	s = create_socket(argv[1]);
+    if (s <= 0) {
+        std::cerr << "cannot create socket" << std::endl;
+        return 0;
+    }
+    
+    
+// Creation et envoie de la variable tmp permettant de stocker heure & date
+	char tmp[100];
+	time_t t;
+	struct tm * T;	
+	time(&t)
+	T=localtime(&t);
+	snprint(tmp, sizeof(tmp), "%s", acstime(T));
+
+    write(s, tmp, 1 + strlen(tmp));
+    
+  
+		
+		
+	
+
+close(s);
 	return 0;
 }
+
+
+
+
+        
