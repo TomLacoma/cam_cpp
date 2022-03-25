@@ -81,7 +81,7 @@ int main (int argc, char * argv[])
 //Envoie de l'image
 	
 	char* Image[9999999];
-	sprintf(Image, "", gettype(capture), taill_fichier(capture));
+	sprintf(Image, "", gettype(capture), taille_fichier(capture));
 	
     
   
