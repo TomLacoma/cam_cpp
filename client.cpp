@@ -2,6 +2,10 @@
 #include <netdb.h>
 #include <iostream>
 #include "base.h"
+#include <cstring>
+#include <unistd.h>
+
+using namespace std;
 
 int main (int argc, char * argv[])
 
@@ -9,7 +13,7 @@ int main (int argc, char * argv[])
         struct sockaddr_in saddr;
         struct hostent * server;
         int s, ret;
-	char buf[256];
+
 
 	if (argc == 1) {
 		std::cerr << "usage: " << argv[0]
@@ -42,8 +46,18 @@ int main (int argc, char * argv[])
                 return 0;
         }
 
-	read(s, buf, sizeof(buf));
-	std::cout << buf << std::endl;
+  time_t t;
+	struct tm * T;
+  char tmp[100];
+
+  time(&t);
+  T = localtime(&t);
+  snprintf(tmp, sizeof(tmp), "%s", asctime(T));
+
+  ret=write(s, tmp, 1 + strlen(tmp));
+  std::cout << ret << '\n';
+
+
 
 	close(s);
 	return 0;

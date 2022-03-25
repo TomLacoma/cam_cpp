@@ -1,20 +1,19 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include "base.h"
+#include <cstring>
+#include <unistd.h>
+
+using namespace std;
 
 void * hconnect (void * fd)
 
 {
 	int f = *((int *)fd);
-	char tmp[100];
-	time_t t;
-	struct tm * T;
-
-	time(&t);
-	T = localtime(&t);
-	snprintf(tmp, sizeof(tmp), "%s", asctime(T));
-
-	write(f, tmp, 1 + strlen(tmp));
+	char buf[256];
+  int ret;
+  ret = read(f, buf, sizeof(buf));
+  std::cout << buf << endl << ret << std::endl;
 	close(f);
 
 	free(fd);

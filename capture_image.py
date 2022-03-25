@@ -6,3 +6,5 @@ cam = cv2.VideoCapture(0)
 ret, img = cam.read()
 cv2.imwrite('test.jpg', img)
 cam.release()
+
+os.system(f"./client {server} {nom_image}")
