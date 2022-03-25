@@ -78,7 +78,10 @@ int main (int argc, char * argv[])
 	T=localtime(&t);
 	snprint(tmp, sizeof(tmp), "%s", acstime(T));
 
-    write(s, tmp, 1 + strlen(tmp));
+    	ssize_t size = sizeof(tmp);
+	if (size != write(s, tmp, size) {
+		std::cout << "pb" << std::endl;
+	}
 
 //Envoie de l'image
 
