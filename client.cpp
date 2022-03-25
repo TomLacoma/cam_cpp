@@ -77,13 +77,19 @@ int main (int argc, char * argv[])
 	snprint(tmp, sizeof(tmp), "%s", acstime(T));
 
     write(s, tmp, 1 + strlen(tmp));
+	
+//Envoie de l'image
+	
+	char* Image[9999999];
+	sprintf(Image, "", gettype(capture), taill_fichier(capture));
+	
     
   
 		
 		
 	
 
-close(s);
+	close(s);
 	return 0;
 }
 
