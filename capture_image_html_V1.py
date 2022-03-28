@@ -6,26 +6,34 @@ import sys
 from datetime import datetime
 import time
 
+#n =0 pour éviter la boucle infinie, !=0 rentre dans la boucle
 n=1
 
-template = open('client1.tmpl', 'r')
-html_file = open('client1_V2.html', 'w+')
+template = open('client1.tmpl', 'r') #template du html
+html_file = open('client1.html', 'w+') #html écrit à partir du template
+cam = cv2.VideoCapture(0)
 
-
-
-for line in template:
-        html_file.write(line)
+string1 = '<!--  Date et heure: -->' #String pour cibler où écrire la date dans le html
 
 # Boucle infinie pour rafraichir la page html
+
 while(n!=0):
 
-    cam = cv2.VideoCapture(0)
-    date=str(datetime.now())
     ret, img = cam.read()
-    cv2.imwrite('client1_V2.jpg', img)
-
-    print(date)
-    cam.release()
+    cv2.imwrite('client1.jpg', img)
+    date=str(datetime.now())
+    #cam.release()
+    
+    html_file = open('client1.html', 'w+')
+    # Boucle qui écrit de nouveau entièrement html, pas très propre mais fonctionne
+    for line in template:
+        html_file.write(line)
+        if string1 in line:
+            html_file.write('\n   '+date)
+    template.seek(0)
+    html_file.close()
+    
     time.sleep(5)
+    
 
 #os.system(f"./client {server} {nom_image}")
