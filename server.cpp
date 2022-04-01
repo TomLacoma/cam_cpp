@@ -12,20 +12,35 @@ void * hconnect (void * fd)
 
 {
 	int f = *((int *)fd);
-	char buf[256]; //file name = date
+	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
   string name = (string) buf + ".jpg";//file name
 
-  std::cout << buf << endl << ret << std::endl;
+  //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
   long unsigned int taille;
   ret = read(f, &taille, sizeof(taille)); //receive the image size
 
+	//std::cout << "taille image reçue" << taille << '\n';
 
   char img[taille];
+	//memset(img, 0, taille);
 
-  ret = read(f, img, sizeof(img)); //receive the image
+	long unsigned int remain = taille;
+	size_t img_offset = 0;
+	while (remain > 0) {
+		ret = read(f, img + img_offset, remain);
+		//cout << "ret " << ret << " remain " << remain << endl;
+		remain -= ret;
+		img_offset += ret;
+	}
+//  ret = read(f, img, taille); //receive the image
+	/*printf("ret = %d taille = %lu\n", ret, taille);
+	FILE * fp = fopen("server.log", "w");
+	for (unsigned i = 0; i < taille; i++) fprintf(fp, "%d ", img[i]);
+	fprintf(fp, "\n");
+	fclose(fp);*/
 
   FILE * dest = fopen(name.c_str(), "w"); //write the image
   fwrite(img, taille, 1, dest);
