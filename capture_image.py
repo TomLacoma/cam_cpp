@@ -4,14 +4,10 @@ import cv2
 import time
 import os
 
-now = str(time.time()).split(".")[0]
-
-print(now)
-
 cam = cv2.VideoCapture(0)
 ret, img = cam.read()
-cv2.imwrite(f"{now}.jpg", img)
+cv2.imwrite("client.jpg", img)
 cam.release()
 
 
-os.system(f"./client localhost client1.jpg")
+os.system("./client localhost client.jpg")

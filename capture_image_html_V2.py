@@ -25,6 +25,7 @@ while(n!=0):
 
     ret, img = cam.read()
     cv2.imwrite('test.jpg', img)
+    os.system(f"./client {server} test.jpg")
     #date=str(datetime.now())
     #cam.release()
 
@@ -38,3 +39,4 @@ while(n!=0):
     #html_file.close()
 
     time.sleep(5)
+cam.release()
