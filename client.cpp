@@ -83,7 +83,7 @@ int main (int argc, char * argv[])
 		std::cout << "pb" << std::endl;
 	}
 
-//Envoie de l'image
+//Envoie de l'image      argv[2] correspond au nom de l'image à envoyer
 
 	ssize_t size_Image;
 	ssize_t size_taille;
