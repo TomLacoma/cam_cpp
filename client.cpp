@@ -90,9 +90,9 @@ int main (int argc, char * argv[])
   char * Image = NULL;
 
 	struct stat properties;
-	if (0 == stat("test.jpg", &properties)) {
+	if (0 == stat(argv[2], &properties)) {
 		Image = new char[properties.st_size];
-		FILE * fp = fopen("test.jpg", "r");
+		FILE * fp = fopen(argv[2], "r");
 		int rez = fread(Image, 1, properties.st_size, fp);
     if(rez!=properties.st_size){std::cout << "Problème" << '\n';}
 		fclose(fp);
