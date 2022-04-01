@@ -1,5 +1,5 @@
 CLIENT = client.o
-SERVER = server.o
+SERVER = server.o edit_html.o
 
 all: client server
 
@@ -8,6 +8,9 @@ server: $(SERVER)
 
 client: $(CLIENT)
 	c++ -o client $(CLIENT)
+
+edit_html: edit_html.o
+	c++ -o edit_html edit_html.o -Wall -Wshadow -Werror -O
 
 test: test.o
 	c++ -o test test.o

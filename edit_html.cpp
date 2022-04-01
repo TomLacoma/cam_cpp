@@ -21,7 +21,7 @@ using namespace std;
 using namespace std::chrono;
 
 
-void edit(string client)
+void edit_html(string client, string date)
 {
   ofstream html_file;
   ifstream html_template;
@@ -30,20 +30,29 @@ void edit(string client)
 
   vector<string> lines;
   string line;
-  string Date_indice = "    <!--  Date et heure: -->";
-
-  time_t t;
-  struct tm * T;
-  time(&t);
-  T=localtime(&t);
+  string Date_indice = "<!--Date et heure:-->";
 
   while(getline(html_template, line)){
     lines.push_back(line);
     html_file << line << endl;
-    if (line==Date_indice){
-      html_file << asctime(T) << endl;
+    if (line.find(Date_indice)!=string::npos){
+      html_file << date << endl;
     }
   }
   html_template.close();
   html_file.close();
 }
+
+
+/*
+Client::Client(string ip_addr, struct tm temps, string img){
+  ip = ip_addr;
+  last_seen = temps;
+  last_pic = img;
+  nb_clients++;
+}
+
+Client::~Client(){
+  nb_clients--;
+}
+*/

@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <fstream>
+#include "edit_html.h"
 
 using namespace std;
 
@@ -15,8 +16,8 @@ void * hconnect (void * fd)
 	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
-  string name = (string) buf + ".jpg";//file name
-
+  //string name = (string) buf + ".jpg";//file name
+	string name = "client1.jpg";
   //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
   long unsigned int taille;
@@ -45,6 +46,9 @@ void * hconnect (void * fd)
   FILE * dest = fopen(name.c_str(), "w"); //write the image
   fwrite(img, taille, 1, dest);
   fclose(dest);
+
+	edit_html("client1", buf);
+
 
 	close(f);
 

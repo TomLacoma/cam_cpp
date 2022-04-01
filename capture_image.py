@@ -14,4 +14,4 @@ cv2.imwrite(f"{now}.jpg", img)
 cam.release()
 
 
-#os.system(f"./client {server} {path_to_img}")
+os.system(f"./client localhost client1.jpg")
