@@ -99,7 +99,13 @@ int main (int argc, char ** argv)
 	}
 
         while (1) {
-                f = accept(s, NULL, 0);
+                struct sockaddr addr;
+		socklen_t addrsize = sizeof(addr);
+                f = accept(s, &addr, &addrsize);
+		struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&addr;
+		struct in_addr ipAddr = pV4Addr->sin_addr;
+		char AdressIP[INET_ADDRSTRLEN];
+		inet_ntop( AF_INET, &ipAddr, AdressIP, INET_ADDRSTRLEN );   //L'adresse IP est stocké dans la variable AdressIP
                 if (f == -1) {
 			fprintf(stderr, "accept() failed\n");
 			return 0;
