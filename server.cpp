@@ -25,7 +25,10 @@ void * hconnect (void * fd)
   int ret;
   ret = read(f, buf, sizeof(buf));
   //string name = (string) buf + ".jpg";//file name
-	string name = string(client.ip) + ".jpg";
+	std::cout << client.pic_count << '\n';
+	string name = string(client.ip) + "img" + to_string(client.pic_count) + ".jpg";
+	client.new_pic();
+	std::cout << client.pic_count << '\n';
   //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
   long unsigned int taille;
@@ -55,7 +58,8 @@ void * hconnect (void * fd)
   fwrite(img, taille, 1, dest);
   fclose(dest);
 
-	edit_html("client1", buf);
+	client.last_pic = name;
+	edit_html(client);
 
 
 	close(f);
@@ -138,7 +142,6 @@ int main (int argc, char ** argv)
 
 
 		for(int _i=0; _i<Client::nb_clients; _i++){
-			std::cout << "c'est là" << '\n';
 			if((*(Client*)clients[_i]).ip == AdressIP){
 				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
 				new_client=false;
@@ -157,6 +160,7 @@ int main (int argc, char ** argv)
 		*fd = f;
 		pthread_create(&tid, NULL, hconnect, (void *)fd);*/
 		pthread_create(&tid, NULL, hconnect, clients[index]);
+		std::cout << "pic count" << (*(Client*)clients[index]).nb_clients << '\n';
 		//pthread_create(&tid, NULL, hconnect, client);
 
         }

@@ -21,22 +21,36 @@ using namespace std;
 using namespace std::chrono;
 
 
-void edit_html(string client, string date)
+void edit_html(Client client)
 {
   ofstream html_file;
   ifstream html_template;
-  html_file.open(client +".html");
-  html_template.open(client +".tmpl");
+  html_file.open((string) client.ip +".html");
+  html_template.open("template.tmpl");
 
   vector<string> lines;
   string line;
   string Date_indice = "<!--Date et heure:-->";
+  string Client_indice = "<!-- Client -->";
+  string Pic_indice = "<!-- Pic -->";
+  string Meta_indice = "<!--meta-->";
 
   while(getline(html_template, line)){
     lines.push_back(line);
-    html_file << line << endl;
     if (line.find(Date_indice)!=string::npos){
-      html_file << date << endl;
+      html_file << asctime(client.last_seen) << endl; //adds date to the html file
+    }
+    else if(line.find(Client_indice)!=string::npos){
+      html_file << "<h1>" << client.ip << "</h1>" << endl; //add the client ip to the html file
+    }
+    else if(line.find(Pic_indice)!=string::npos){
+      html_file << "<img src=\"" << client.last_pic << "\" width=\"400\" height=\"400\" alt=" << client.ip <<"\">" << endl; //add the client ip to the html file
+    }
+    else if(line.find(Meta_indice)!=string::npos){
+      html_file << "<meta http-equiv=\"refresh\" content=\"5; url="<< (string) client.ip +".html" << "\" charset=\"utf-8\">" << endl; //add the client ip to the html file
+    }
+    else{
+          html_file << line << endl;
     }
   }
   html_template.close();
@@ -49,7 +63,7 @@ Client::Client(){
 
   time_t t = 0;
   last_seen = localtime(&t);
-
+  pic_count=0;
   last_pic = "NONE";
 }
 
@@ -62,7 +76,7 @@ Client::Client(char* ip_addr, int _f, string img){
   last_seen = localtime(&t);
 
   nb_clients++;
-
+  pic_count=0;
   last_pic = img;
 }
 
@@ -75,4 +89,8 @@ void Client::update(int _f){
   time_t t;
   time(&t);
   last_seen = localtime(&t);
+}
+
+void Client::new_pic(){
+  pic_count++;
 }

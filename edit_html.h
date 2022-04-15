@@ -13,16 +13,18 @@ public:
   struct tm* last_seen;
   static int nb_clients;
 
-  string last_pic; //path to last pic taken by client
 
+  string last_pic; //path to last pic taken by client
+  int pic_count;
 
   Client(char* _ip, int _f, string _last_pic);
   Client();
   ~Client();
   void update(int f);
+  void new_pic();
 };
 
 
 
 
-void edit_html(std::string, std::string);
+void edit_html(Client);
