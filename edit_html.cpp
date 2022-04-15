@@ -43,16 +43,36 @@ void edit_html(string client, string date)
   html_file.close();
 }
 
+Client::Client(){
+  ip = "NONE";
+  f=0;
 
-/*
-Client::Client(string ip_addr, struct tm temps, string img){
+  time_t t = 0;
+  last_seen = localtime(&t);
+
+  last_pic = "NONE";
+}
+
+Client::Client(char* ip_addr, int _f, string img){
   ip = ip_addr;
-  last_seen = temps;
-  last_pic = img;
+  f = _f;
+
+  time_t t;
+  time(&t);
+  last_seen = localtime(&t);
+
   nb_clients++;
+
+  last_pic = img;
 }
 
 Client::~Client(){
   nb_clients--;
 }
-*/
+
+void Client::update(int _f){
+  f = _f;
+  time_t t;
+  time(&t);
+  last_seen = localtime(&t);
+}

@@ -56,7 +56,7 @@ int main (int argc, char * argv[])
 
 {
 //Creation d'un socket, etc...
-	if (argc == 1) {
+	if (argc <= 2) {
 		std::cerr << "usage: " << argv[0]
 			  << " [ adresse IP/nom du serveur 1 ] [ nom du fichier ]" << std::endl;
 		return 0;
@@ -96,7 +96,7 @@ int main (int argc, char * argv[])
 		Image = new char[properties.st_size];
 		FILE * fp = fopen(argv[2], "r");
 		int rez = fread(Image, 1, properties.st_size, fp);
-    if(rez!=properties.st_size){std::cout << "Problème" << '\n';}
+    if(rez!=properties.st_size){std::cout << "Problème à la lecture de l'image" << '\n';}
 		fclose(fp);
 	}
 
@@ -108,7 +108,7 @@ int main (int argc, char * argv[])
     fclose(fp);
 */
     size_taille = write(s, &properties.st_size, sizeof(properties.st_size));
-    if(size_taille!=sizeof(properties.st_size)){std::cout << "Problème" << '\n';}
+    if(size_taille!=sizeof(properties.st_size)){std::cout << "Problème à l'envoi de l'image" << '\n';}
 
     long unsigned int remain = properties.st_size;
     size_t img_offset = 0;

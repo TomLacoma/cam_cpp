@@ -6,18 +6,26 @@
 #include <cassert>
 #include <fstream>
 #include "edit_html.h"
+#include <vector>
+
+
+#define MAX_CLIENTS 128 //arbitraire, pour ne pas avoir trop de clients connectés
 
 using namespace std;
+
+
+int Client::nb_clients = -1; //initialize at -1 so the indexes in void* clients are not messed up (indexed by static int nb_clients)
 
 void * hconnect (void * fd)
 
 {
-	int f = *((int *)fd);
+	Client client = *((Client*)fd);
+	int f = client.f;
 	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
   //string name = (string) buf + ".jpg";//file name
-	string name = "client1.jpg";
+	string name = string(client.ip) + ".jpg";
   //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
   long unsigned int taille;
@@ -52,7 +60,7 @@ void * hconnect (void * fd)
 
 	close(f);
 
-	free(fd);
+	//free(fd);
 	pthread_detach(pthread_self());
 	return NULL;
 }
@@ -63,8 +71,13 @@ int main (int argc, char ** argv)
         const char * server = "0.0.0.0";
         struct sockaddr_in sin;
         int s, f, ret;
-	pthread_t tid;
-	int optval = 1;
+				pthread_t tid;
+				int optval = 1;
+
+				bool new_client = true;
+				int index;
+
+				void* clients[MAX_CLIENTS];
 
         sin.sin_family = AF_INET;
         sin.sin_port = htons(DEFAULT_PORT);
@@ -99,6 +112,11 @@ int main (int argc, char ** argv)
 	}
 
         while (1) {
+					if(Client::nb_clients>MAX_CLIENTS){
+						std::cout << "Reached maximum number of clients, exiting..." << '\n';
+						return 0;
+					}
+					new_client=true;
                 struct sockaddr addr;
 		socklen_t addrsize = sizeof(addr);
                 f = accept(s, &addr, &addrsize);
@@ -111,9 +129,36 @@ int main (int argc, char ** argv)
 			return 0;
 		}
 
-		int * fd = new int;
+
+		/*void* client;
+		Client c(AdressIP, f, "NONE");
+		client = &c;*/
+
+
+
+
+		for(int _i=0; _i<Client::nb_clients; _i++){
+			std::cout << "c'est là" << '\n';
+			if((*(Client*)clients[_i]).ip == AdressIP){
+				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
+				new_client=false;
+				index=_i;
+			}
+		}
+		if(new_client){
+			Client client(AdressIP, f, "NONE"); //declares a new client
+			clients[client.nb_clients]=&client;
+			index=client.nb_clients;
+		}
+
+
+		//std::cout << AdressIP << '\n';
+		/*int * fd = new int;
 		*fd = f;
-		pthread_create(&tid, NULL, hconnect, (void *)fd);
+		pthread_create(&tid, NULL, hconnect, (void *)fd);*/
+		pthread_create(&tid, NULL, hconnect, clients[index]);
+		//pthread_create(&tid, NULL, hconnect, client);
+
         }
 
         return 0;

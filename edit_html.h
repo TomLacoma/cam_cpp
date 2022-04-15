@@ -4,20 +4,24 @@
 using namespace std;
 
 
-/*
+
 class Client{
 public:
-  const string ip;
-  struct tm last_seen;
+  const char* ip; //ip client
+  int f; //socket
+
+  struct tm* last_seen;
   static int nb_clients;
-  std::string last_pic;
+
+  string last_pic; //path to last pic taken by client
 
 
-  Client(char*, struct tm, string);
+  Client(char* _ip, int _f, string _last_pic);
+  Client();
   ~Client();
-  //void update(struct tm, std::string);
+  void update(int f);
 };
-*/
+
 
 
 
