@@ -9,6 +9,7 @@
 
 
 
+
 #define MAX_CLIENTS 128 //arbitraire, pour ne pas avoir trop de clients connectés
 
 using namespace std;
@@ -158,6 +159,9 @@ int main (int argc, char ** argv)
 			Client::nb_clients++;
 			clients[Client::nb_clients]= new Client(AdressIP, f, "NONE");
 			index=Client::nb_clients;
+
+			add_global_client((Client*)clients[Client::nb_clients]);
+
 			std::cout << "created" << '\n';
 		}
 		std::cout << "coucou2" << '\n';

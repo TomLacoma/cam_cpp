@@ -1,5 +1,7 @@
 #!/usr/local/anaconda3/bin/python3
 
+server = "localhost" #Switch with server ip
+
 import cv2
 import time
 import os
@@ -10,4 +12,4 @@ cv2.imwrite("client.jpg", img)
 cam.release()
 
 
-os.system("./client localhost client.jpg")
+os.system(f"./client {server} client.jpg")

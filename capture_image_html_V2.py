@@ -6,22 +6,11 @@ import sys
 from datetime import datetime
 import time
 
-#n =0 pour éviter la boucle infinie, !=0 rentre dans la boucle
-n=1
-
-#template = open('client1.tmpl', 'r') #template du html
-#html_file = open('client1.html', 'w+') #html écrit à partir du template
 cam = cv2.VideoCapture(0)
+server = "localhost" #Switch with server ip
 
-#string1 = '<!--  Date et heure: -->' #String pour cibler où écrire la date dans le html
 
-# Boucle infinie pour rafraichir la page html
-
-ret, img = cam.read()
-cv2.imwrite('test.jpg', img)
-#os.system(f"./client {server} {nom_image}")
-
-while(n!=0):
+while(True):
 
     ret, img = cam.read()
     cv2.imwrite('test.jpg', img)

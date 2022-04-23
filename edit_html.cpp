@@ -20,8 +20,35 @@ using namespace std;
 
 using namespace std::chrono;
 
+void add_global_client(Client* client){
+  ofstream html_file;
+  ifstream html_template;
+  html_file.open("global.html");
+  html_template.open("global.tmpl");
 
-void edit_html(Client* client)
+  vector<string> lines;
+  string line;
+  string client_flag = "<!--clients-->";
+
+
+  while(getline(html_template, line)){
+    lines.push_back(line);
+    if (line.find(client_flag)!=string::npos){
+      html_file <<   "<body>" << endl <<
+      "<iframe src=\""<< client->ip << ".html\" width=\"400\" height=\"400\"></iframe>" << endl <<
+      "</body>" << endl;
+    }
+    else{
+      html_file << line << endl;
+    }
+  }
+  html_template.close();
+  html_file.close();
+
+}
+
+
+void edit_html(Client* client) //Edits specific client tmpl file to refresh the client file with the last pic
 {
   ofstream html_file;
   ifstream html_template;
