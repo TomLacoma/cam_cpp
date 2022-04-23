@@ -21,11 +21,11 @@ using namespace std;
 using namespace std::chrono;
 
 
-void edit_html(Client client)
+void edit_html(Client* client)
 {
   ofstream html_file;
   ifstream html_template;
-  html_file.open((string) client.ip +".html");
+  html_file.open((string) client->ip +".html");
   html_template.open("template.tmpl");
 
   vector<string> lines;
@@ -35,19 +35,20 @@ void edit_html(Client client)
   string Pic_indice = "<!-- Pic -->";
   string Meta_indice = "<!--meta-->";
 
+
   while(getline(html_template, line)){
     lines.push_back(line);
     if (line.find(Date_indice)!=string::npos){
-      html_file << asctime(client.last_seen) << endl; //adds date to the html file
+      html_file << asctime(client->last_seen) << endl; //adds date to the html file
     }
     else if(line.find(Client_indice)!=string::npos){
-      html_file << "<h1>" << client.ip << "</h1>" << endl; //add the client ip to the html file
+      html_file << "<h1>" << client->ip << "</h1>" << endl; //add the client ip to the html file
     }
     else if(line.find(Pic_indice)!=string::npos){
-      html_file << "<img src=\"" << client.last_pic << "\" width=\"400\" height=\"400\" alt=" << client.ip <<"\">" << endl; //add the client ip to the html file
+      html_file << "<img src=\"" << client->last_pic << "\" width=\"400\" height=\"400\" alt=\"" << client->ip <<"\">" << endl; //add the client ip to the html file
     }
     else if(line.find(Meta_indice)!=string::npos){
-      html_file << "<meta http-equiv=\"refresh\" content=\"5; url="<< (string) client.ip +".html" << "\" charset=\"utf-8\">" << endl; //add the client ip to the html file
+      html_file << "<meta http-equiv=\"refresh\" content=\"5; url="<< (string) client->ip +".html" << "\" charset=\"utf-8\">" << endl; //add the client ip to the html file
     }
     else{
           html_file << line << endl;
@@ -58,8 +59,10 @@ void edit_html(Client client)
 }
 
 Client::Client(){
+  std::cout << "Empty client created" << '\n';
   ip = "NONE";
   f=0;
+
 
   time_t t = 0;
   last_seen = localtime(&t);
@@ -68,6 +71,7 @@ Client::Client(){
 }
 
 Client::Client(char* ip_addr, int _f, string img){
+  std::cout << "Client created" << '\n';
   ip = ip_addr;
   f = _f;
 
@@ -75,13 +79,13 @@ Client::Client(char* ip_addr, int _f, string img){
   time(&t);
   last_seen = localtime(&t);
 
-  nb_clients++;
+
   pic_count=0;
   last_pic = img;
 }
 
 Client::~Client(){
-  nb_clients--;
+  std::cout << "destroyed client" << '\n';
 }
 
 void Client::update(int _f){

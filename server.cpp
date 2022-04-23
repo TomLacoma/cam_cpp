@@ -6,7 +6,7 @@
 #include <cassert>
 #include <fstream>
 #include "edit_html.h"
-#include <vector>
+
 
 
 #define MAX_CLIENTS 128 //arbitraire, pour ne pas avoir trop de clients connectés
@@ -19,16 +19,21 @@ int Client::nb_clients = -1; //initialize at -1 so the indexes in void* clients 
 void * hconnect (void * fd)
 
 {
-	Client client = *((Client*)fd);
-	int f = client.f;
+	std::cout << "Début du thread" << '\n';
+	//Client* client = new Client();
+	std::cout << "debug1" << '\n';
+	Client* client = (Client*)fd;
+	int f = client->f;
+	std::cout << "debug2" << '\n';
 	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
-  //string name = (string) buf + ".jpg";//file name
-	std::cout << client.pic_count << '\n';
-	string name = string(client.ip) + "img" + to_string(client.pic_count) + ".jpg";
-	client.new_pic();
-	std::cout << client.pic_count << '\n';
+
+	string name = string(client->ip) + "img" + to_string(client->pic_count) + ".jpg";
+	std::cout << buf << '\n';
+	client->last_pic = name;
+	client->pic_count ++;
+	std::cout << "pic count "<<  client->pic_count << '\n';
   //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
   long unsigned int taille;
@@ -58,10 +63,10 @@ void * hconnect (void * fd)
   fwrite(img, taille, 1, dest);
   fclose(dest);
 
-	client.last_pic = name;
 	edit_html(client);
 
-
+	//rajouter ici : save changes, qui migre tout le contenu de la classe client locale vers celle de la liste
+	std::cout << "End of thread, closing \n" << '\n';
 	close(f);
 
 	//free(fd);
@@ -139,28 +144,30 @@ int main (int argc, char ** argv)
 		client = &c;*/
 
 
-
+		std::cout << "coucou" << '\n';
 
 		for(int _i=0; _i<Client::nb_clients; _i++){
 			if((*(Client*)clients[_i]).ip == AdressIP){
 				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
 				new_client=false;
 				index=_i;
+				std::cout << "updated" << '\n';
 			}
 		}
 		if(new_client){
-			Client client(AdressIP, f, "NONE"); //declares a new client
-			clients[client.nb_clients]=&client;
-			index=client.nb_clients;
+			Client::nb_clients++;
+			clients[Client::nb_clients]= new Client(AdressIP, f, "NONE");
+			index=Client::nb_clients;
+			std::cout << "created" << '\n';
 		}
-
+		std::cout << "coucou2" << '\n';
 
 		//std::cout << AdressIP << '\n';
 		/*int * fd = new int;
 		*fd = f;
 		pthread_create(&tid, NULL, hconnect, (void *)fd);*/
 		pthread_create(&tid, NULL, hconnect, clients[index]);
-		std::cout << "pic count" << (*(Client*)clients[index]).nb_clients << '\n';
+		std::cout << "Client count " << Client::nb_clients << '\n';
 		//pthread_create(&tid, NULL, hconnect, client);
 
         }

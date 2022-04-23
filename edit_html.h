@@ -27,4 +27,4 @@ public:
 
 
 
-void edit_html(Client);
+void edit_html(Client*);

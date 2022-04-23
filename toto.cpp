@@ -19,9 +19,9 @@ int main (void) {
 	cout << t.a << endl;
 	void *pv=NULL;
 	pv = &t;
-	cout << "pv=" << (*(toto*)pv).a << endl ;
-	(*(toto*)pv).a = 4;
- cout << "pv=" << (*(toto*)pv).a << endl ;
+	toto tata = (*(toto*)pv);
+	cout << "pv=" << tata.a << endl ;
+	tata.a = 4;
+ cout << "pv=" << tata.a << endl ;
 	return 0;
 }
-
