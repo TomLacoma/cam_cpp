@@ -28,4 +28,4 @@ public:
 
 
 void edit_html(Client*);
-void add_global_client(Client*);
+void edit_html_global(void** clients, int nb_clients);

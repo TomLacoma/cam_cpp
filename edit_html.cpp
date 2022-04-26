@@ -20,7 +20,7 @@ using namespace std;
 
 using namespace std::chrono;
 
-void add_global_client(Client* client){
+void edit_html_global(void** clients, int nb_clients){
   ofstream html_file;
   ifstream html_template;
   html_file.open("global.html");
@@ -34,9 +34,14 @@ void add_global_client(Client* client){
   while(getline(html_template, line)){
     lines.push_back(line);
     if (line.find(client_flag)!=string::npos){
+
+      for(int i=0; i<nb_clients; i++){
       html_file <<   "<body>" << endl <<
-      "<iframe src=\""<< client->ip << ".html\" width=\"400\" height=\"400\"></iframe>" << endl <<
+      "<iframe src=\""<< (*(Client*)clients[i]).ip << ".html\" width=\"400\" height=\"400\"></iframe>" << endl <<
       "</body>" << endl;
+    }
+
+      html_file << line << endl;
     }
     else{
       html_file << line << endl;

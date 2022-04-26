@@ -15,17 +15,16 @@
 using namespace std;
 
 
-int Client::nb_clients = -1; //initialize at -1 so the indexes in void* clients are not messed up (indexed by static int nb_clients)
+int Client::nb_clients = 0; //initialize at -1 so the indexes in void* clients are not messed up (indexed by static int nb_clients)
 
 void * hconnect (void * fd)
 
 {
 	std::cout << "Début du thread" << '\n';
-	//Client* client = new Client();
-	std::cout << "debug1" << '\n';
+
 	Client* client = (Client*)fd;
 	int f = client->f;
-	std::cout << "debug2" << '\n';
+
 	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
@@ -37,8 +36,9 @@ void * hconnect (void * fd)
 	std::cout << "pic count "<<  client->pic_count << '\n';
   //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
 
-  long unsigned int taille;
+  long unsigned int taille=0;
   ret = read(f, &taille, sizeof(taille)); //receive the image size
+
 
 	//std::cout << "taille image reçue" << taille << '\n';
 
@@ -49,16 +49,9 @@ void * hconnect (void * fd)
 	size_t img_offset = 0;
 	while (remain > 0) {
 		ret = read(f, img + img_offset, remain);
-		//cout << "ret " << ret << " remain " << remain << endl;
 		remain -= ret;
 		img_offset += ret;
 	}
-//  ret = read(f, img, taille); //receive the image
-	/*printf("ret = %d taille = %lu\n", ret, taille);
-	FILE * fp = fopen("server.log", "w");
-	for (unsigned i = 0; i < taille; i++) fprintf(fp, "%d ", img[i]);
-	fprintf(fp, "\n");
-	fclose(fp);*/
 
   FILE * dest = fopen(name.c_str(), "w"); //write the image
   fwrite(img, taille, 1, dest);
@@ -140,11 +133,6 @@ int main (int argc, char ** argv)
 		}
 
 
-		/*void* client;
-		Client c(AdressIP, f, "NONE");
-		client = &c;*/
-
-
 		std::cout << "coucou" << '\n';
 
 		for(int _i=0; _i<Client::nb_clients; _i++){
@@ -160,7 +148,7 @@ int main (int argc, char ** argv)
 			clients[Client::nb_clients]= new Client(AdressIP, f, "NONE");
 			index=Client::nb_clients;
 
-			add_global_client((Client*)clients[Client::nb_clients]);
+			edit_html_global(clients, Client::nb_clients);
 
 			std::cout << "created" << '\n';
 		}
