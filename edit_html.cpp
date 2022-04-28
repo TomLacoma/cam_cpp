@@ -104,7 +104,7 @@ Client::Client(){
 
 Client::Client(char* ip_addr, int _f, string img){
   std::cout << "Client created" << '\n';
-  ip = ip_addr;
+  ip = strdup(ip_addr);
   f = _f;
 
   time_t t;
