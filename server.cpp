@@ -133,9 +133,9 @@ int main (int argc, char ** argv)
 		}
 
 
-		std::cout << "coucou" << '\n';
+		std::cout << "Départ, clients =" << Client::nb_clients << '\n';
 
-		for(int _i=0; _i<Client::nb_clients; _i++){
+		for(int _i=0; _i<=Client::nb_clients; _i++){
 			if((*(Client*)clients[_i]).ip == AdressIP){
 				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
 				new_client=false;
@@ -152,7 +152,7 @@ int main (int argc, char ** argv)
 
 			std::cout << "created" << '\n';
 		}
-		std::cout << "coucou2" << '\n';
+
 
 		//std::cout << AdressIP << '\n';
 		/*int * fd = new int;
