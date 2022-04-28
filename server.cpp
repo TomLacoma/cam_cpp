@@ -138,6 +138,7 @@ int main (int argc, char ** argv)
 		std::cout << sizeof(clients) << '\n';
 		std::cout << "Départ, clients =" << Client::nb_clients << '\n';
 
+<<<<<<< HEAD
 		new_client=true;
 		int i=0;
 
@@ -158,6 +159,12 @@ int main (int argc, char ** argv)
 			std::cout << "Located client " << (*(Client*)clients[_i]).ip << "for ip" << AdressIP << '\n';
 			std::cout << "loop i = " << _i << '\n';
 			if(((Client*)clients[_i])->ip == AdressIP){
+=======
+		std::cout << "Départ, clients =" << Client::nb_clients << '\n';
+
+		for(int _i=0; _i<=Client::nb_clients; _i++){
+			if((*(Client*)clients[_i]).ip == AdressIP){
+>>>>>>> 577486d26ce9fe1f6c86b6973471d3c585191e42
 				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
 				new_client=false;
 				index=_i;
