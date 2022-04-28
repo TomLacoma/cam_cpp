@@ -24,7 +24,7 @@ void * hconnect (void * fd)
 
 	Client* client = (Client*)fd;
 	int f = client->f;
-
+	std::cout << "test" << '\n';
 	char buf[100]; //file name = date
   int ret;
   ret = read(f, buf, sizeof(buf));
@@ -80,7 +80,10 @@ int main (int argc, char ** argv)
 				bool new_client = true;
 				int index;
 
-				void* clients[MAX_CLIENTS];
+				void** clients = new void*[MAX_CLIENTS];
+				for(int i=0; i<MAX_CLIENTS; i++){
+					clients[i] = NULL;
+				}
 
         sin.sin_family = AF_INET;
         sin.sin_port = htons(DEFAULT_PORT);
@@ -119,7 +122,7 @@ int main (int argc, char ** argv)
 						std::cout << "Reached maximum number of clients, exiting..." << '\n';
 						return 0;
 					}
-					new_client=true;
+
                 struct sockaddr addr;
 		socklen_t addrsize = sizeof(addr);
                 f = accept(s, &addr, &addrsize);
@@ -132,27 +135,48 @@ int main (int argc, char ** argv)
 			return 0;
 		}
 
+		std::cout << sizeof(clients) << '\n';
+		std::cout << "Départ, clients =" << Client::nb_clients << '\n';
 
-		std::cout << "coucou" << '\n';
+		new_client=true;
+		int i=0;
+
+		while(clients[i]!=NULL){
+			std::cout << "Checking client " << (*(Client*)clients[i]).ip << "vs ip " << AdressIP << " and previous f " << ((Client*)clients[i])->f << '\n';
+			std::cout << "loop i = " << i << '\n';
+			if(((Client*)clients[i])->ip == AdressIP){
+				(*(Client*)clients[i]).update(f);//updates client _i with the new socket number
+				new_client=false;
+				index=i;
+				std::cout << "updated" << '\n';
+			}
+			i++;
+		}
+	/*	std::cout << "initial new client bool " << new_client << '\n';
 
 		for(int _i=0; _i<Client::nb_clients; _i++){
-			if((*(Client*)clients[_i]).ip == AdressIP){
+			std::cout << "Located client " << (*(Client*)clients[_i]).ip << "for ip" << AdressIP << '\n';
+			std::cout << "loop i = " << _i << '\n';
+			if(((Client*)clients[_i])->ip == AdressIP){
 				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
 				new_client=false;
 				index=_i;
 				std::cout << "updated" << '\n';
 			}
-		}
-		if(new_client){
-			Client::nb_clients++;
-			clients[Client::nb_clients]= new Client(AdressIP, f, "NONE");
+		}*/
+
+			std::cout << "new_client2 = " << new_client << '\n';
+
+		if(new_client || Client::nb_clients==0){
+			clients[Client::nb_clients] = new Client(AdressIP, f, "NONE");
 			index=Client::nb_clients;
+			Client::nb_clients++;
 
 			edit_html_global(clients, Client::nb_clients);
 
 			std::cout << "created" << '\n';
 		}
-		std::cout << "coucou2" << '\n';
+
 
 		//std::cout << AdressIP << '\n';
 		/*int * fd = new int;

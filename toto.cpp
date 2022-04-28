@@ -15,10 +15,8 @@ toto::toto(int _a){
 using namespace std;
 
 int main (void) {
-	toto t(14);
-	cout << t.a << endl;
 	void *pv=NULL;
-	pv = &t;
+	pv = new toto(14);
 	toto tata = (*(toto*)pv);
 	cout << "pv=" << tata.a << endl ;
 	tata.a = 4;
