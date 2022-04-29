@@ -21,6 +21,7 @@ using namespace std;
 using namespace std::chrono;
 
 void edit_html_global(void** clients, int nb_clients){
+  //refreshes the global.html file with all the current clients store in void** clients
   ofstream html_file;
   ifstream html_template;
   html_file.open("global.html");
@@ -33,11 +34,10 @@ void edit_html_global(void** clients, int nb_clients){
 
   while(getline(html_template, line)){
     lines.push_back(line);
-    if (line.find(client_flag)!=string::npos){
-
+    if (line.find(client_flag)!=string::npos){ //if the client_flag string is found in current line...
       for(int i=0; i<nb_clients; i++){
       html_file <<   "<body>" << endl <<
-      "<iframe src=\""<< (*(Client*)clients[i]).ip << ".html\" width=\"400\" height=\"400\"></iframe>" << endl <<
+      "<iframe src=\""<< (*(Client*)clients[i]).ip << ".html\" width=\"400\" height=\"400\"></iframe>" << endl << //...adds all the client iframes paths to the html file
       "</body>" << endl;
     }
 

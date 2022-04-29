@@ -101,18 +101,12 @@ int main (int argc, char * argv[])
 	}
 
   if (Image != NULL) {
-/*
-    FILE * fp = fopen("client.log", "w"); //debug
-    for (unsigned i = 0; i < properties.st_size; i++) fprintf(fp, "%d ", Image[i]);
-    fprintf(fp, "\n");
-    fclose(fp);
-*/
     size_taille = write(s, &properties.st_size, sizeof(properties.st_size));
     if(size_taille!=sizeof(properties.st_size)){std::cout << "Problème à l'envoi de l'image" << '\n';}
 
     long unsigned int remain = properties.st_size;
     size_t img_offset = 0;
-    while (remain > 0) {
+    while (remain > 0) { //sends the image through socket s, the while is to prevent tcp packet size limitation
       size_Image = write(s, Image + img_offset, remain);
       //cout << "ret " << size_Image << " remain " << remain << endl;
       remain -= size_Image;

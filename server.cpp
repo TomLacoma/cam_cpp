@@ -20,47 +20,39 @@ int Client::nb_clients = 0; //initialize at -1 so the indexes in void* clients a
 void * hconnect (void * fd)
 
 {
-	std::cout << "Début du thread" << '\n';
+	//std::cout << "Début du thread" << '\n';
 
 	Client* client = (Client*)fd;
 	int f = client->f;
-	std::cout << "test" << '\n';
 	char buf[100]; //file name = date
   int ret;
-  ret = read(f, buf, sizeof(buf));
+  ret = read(f, buf, sizeof(buf)); //receive the date the picture was taken
 
 	string name = string(client->ip) + "img" + to_string(client->pic_count) + ".jpg";
-	std::cout << buf << '\n';
-	client->last_pic = name;
+	client->last_pic = name; //update name and picture counts
 	client->pic_count ++;
-	std::cout << "pic count "<<  client->pic_count << '\n';
-  //std::cout << buf << " " << sizeof(buf) << endl << ret << std::endl;
+
 
   long unsigned int taille=0;
   ret = read(f, &taille, sizeof(taille)); //receive the image size
 
 
-	//std::cout << "taille image reçue" << taille << '\n';
-
   char img[taille];
-	//memset(img, 0, taille);
 
 	long unsigned int remain = taille;
 	size_t img_offset = 0;
-	while (remain > 0) {
+	while (remain > 0) { //receive the image data (in several reads if needed), prevents the limitation from tcp buffer size
 		ret = read(f, img + img_offset, remain);
 		remain -= ret;
 		img_offset += ret;
 	}
 
-  FILE * dest = fopen(name.c_str(), "w"); //write the image
+  FILE * dest = fopen(name.c_str(), "w"); //write the image to the file
   fwrite(img, taille, 1, dest);
   fclose(dest);
 
-	edit_html(client);
+	edit_html(client); //updates the image path in the html file for the iframe
 
-	//rajouter ici : save changes, qui migre tout le contenu de la classe client locale vers celle de la liste
-	std::cout << "End of thread, closing \n" << '\n';
 	close(f);
 
 	//free(fd);
@@ -135,57 +127,28 @@ int main (int argc, char ** argv)
 			return 0;
 		}
 
-		std::cout << sizeof(clients) << '\n';
-		std::cout << "Départ, clients =" << Client::nb_clients << '\n';
-
 		new_client=true;
 		int i=0;
 
-		while(clients[i]!=NULL){
-			std::cout << "Checking client " << (*(Client*)clients[i]).ip << "vs ip " << AdressIP << " and previous f " << ((Client*)clients[i])->f << '\n';
-			std::cout << "loop i = " << i << '\n';
-			if(strcmp(((Client*)clients[i])->ip, AdressIP) == 0){
-				(*(Client*)clients[i]).update(f);//updates client _i with the new socket number
+		while(clients[i]!=NULL){ //runs through all the memorized clients in void** clients
+			if(strcmp(((Client*)clients[i])->ip, AdressIP) == 0){ //if ip matches one of the memorized clients
+				(*(Client*)clients[i]).update(f); //updates client _i with the new socket number
 				new_client=false;
-				index=i;
-				std::cout << "updated" << '\n';
+				index=i; //set the index to be given to the receiving thread
 			}
 			i++;
 		}
-	/*	std::cout << "initial new client bool " << new_client << '\n';
 
-		for(int _i=0; _i<Client::nb_clients; _i++){
-			std::cout << "Located client " << (*(Client*)clients[_i]).ip << "for ip" << AdressIP << '\n';
-			std::cout << "loop i = " << _i << '\n';
-			if(((Client*)clients[_i])->ip == AdressIP){
-				(*(Client*)clients[_i]).update(f);//updates client _i with the new socket number
-				new_client=false;
-				index=_i;
-				std::cout << "updated" << '\n';
-			}
-		}*/
 
-			std::cout << "new_client2 = " << new_client << '\n';
-
-		if(new_client || Client::nb_clients==0){
-			clients[Client::nb_clients] = new Client(AdressIP, f, "NONE");
+		if(new_client || Client::nb_clients==0){ //On the first client connexion or if a new client is seen
+			clients[Client::nb_clients] = new Client(AdressIP, f, "NONE"); //creates a new client
 			index=Client::nb_clients;
 			Client::nb_clients++;
 
-			edit_html_global(clients, Client::nb_clients);
-
-			std::cout << "created" << '\n';
+			edit_html_global(clients, Client::nb_clients); //adds an iframe in the global.html for the new client
 		}
 
-
-		//std::cout << AdressIP << '\n';
-		/*int * fd = new int;
-		*fd = f;
-		pthread_create(&tid, NULL, hconnect, (void *)fd);*/
-		pthread_create(&tid, NULL, hconnect, clients[index]);
-		std::cout << "Client count " << Client::nb_clients << '\n';
-		//pthread_create(&tid, NULL, hconnect, client);
-
+		pthread_create(&tid, NULL, hconnect, clients[index]); //creates a thread for the image to be received
         }
 
         return 0;
