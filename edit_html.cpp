@@ -91,7 +91,6 @@ void edit_html(Client* client) //Edits specific client tmpl file to refresh the 
 }
 
 Client::Client(){
-  std::cout << "Empty client created" << '\n';
   ip = "NONE";
   f=0;
 
@@ -103,7 +102,6 @@ Client::Client(){
 }
 
 Client::Client(char* ip_addr, int _f, string img){
-  std::cout << "Client created" << '\n';
   ip = strdup(ip_addr);
   f = _f;
 
@@ -117,7 +115,7 @@ Client::Client(char* ip_addr, int _f, string img){
 }
 
 Client::~Client(){
-  std::cout << "destroyed client" << '\n';
+  free((char*)ip);
 }
 
 void Client::update(int _f){
