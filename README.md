@@ -22,5 +22,7 @@ Lancer server
 
 Missing/ongoing :
 Log des envois des clients dans un fichier unique pour la session
+
 Séparation des fichiers des clients en dossiers
+
 Détection des clients déconnectés pour spécifier l'info sur global.html après un certain timeout entre deux images
